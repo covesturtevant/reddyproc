@@ -7,6 +7,7 @@
 #' @description 
 #' initialize Gap-filling output for gap-filling method after Reichstein et al. (2005)
 
+#' @param sDATA Data frame
 #' @param Var.s Variable to be filled
 #' @param QFVar.s Quality flag of variable to be filled
 #' @param QFValue.n Value of quality flag for _good_ (original) data, other data is set to missing
@@ -16,7 +17,8 @@
 #' @references 
 #' M. Reichstein, E. Falge, D. Baldocchi, D. Papale, M. Aubinet, P. Berbigier, C. Bernhofer, N. Buchmann, T. Gilmanov, A. Granier, T. Grunwald, K. Havrankova, H. Ilvesniemi, D. Janous, A. Knohl, T. Laurila, A. Lohila, D. Loustau, G. Matteucci, T. Meyers, F. Miglietta, J.M. Ourcival, J. Pumpanen, S. Rambal, E. Rotenberg, M. Sanz, J. Tenhunen, G. Seufert, F. Vaccari, T. Vesala, D. Yakir, R. Valentini: On the separation of net ecosystem exchange into assimilation and ecosystem respiration: review and improved algorithm, Global Change Biology 11(9) 1424–1439 (2005)
 
-#' @return A data frame of:\cr
+#' @return A list of:\cr
+#' Data frame sTEMP with:
 #' VAR\emph{_orig} - Original values used for gap filling \cr
 #' VAR\emph{_f   } - Original values and gaps filled with mean of selected datapoints (condition depending on gap filling method) \cr
 #' VAR\emph{_fqc} - Quality flag assigned depending on gap filling method and window length (0 = original data, 1 = most reliable, 2 = medium, 3 = least reliable) \cr
@@ -26,7 +28,8 @@
 #' VAR\emph{_fsd} - Standard deviation of datapoints used for gap filling (uncertainty) \cr
 #' VAR\emph{_fmeth} - Method used for gap filling (1 = similar meteo condition (sFillLUT with Rg, VPD, Tair), 2 = similar meteo (sFillLUT with Rg only), 3 = mean diurnal course (sFillMDC)) \cr
 #' VAR\emph{_fwin} - Full window length used for gap filling \cr
-
+#' \cr
+#' List sINFO
 
 #' @keywords Currently None.
 
@@ -43,7 +46,8 @@ sFillInit = function(
   ## sEddyProc$sFillInit - Initialize gap filling
   ##description<<
   ## Initializes data frame sTEMP for newly generated gap filled data and qualifiers.
-  Var.s                 ##<< Variable to be filled
+  sDATA
+  ,Var.s                 ##<< Variable to be filled
   ,QFVar.s='none'       ##<< Quality flag of variable to be filled
   ,QFValue.n=NA_real_   ##<< Value of quality flag for _good_ (original) data, other data is set to missing
   ,FillAll.b=TRUE       ##<< Fill all values to estimate uncertainties
@@ -53,10 +57,23 @@ sFillInit = function(
   ## AMM
 {
   'Initializes data frame sTEMP for newly generated gap filled data and qualifiers.'
+    
+  fCheckColNames(sDATA,c(Var.s, QFVar.s,'sDateTime'))
   
-  # Check variable to fill and apply quality flag
-  fCheckColNames(cbind(sDATA,sTEMP), c(Var.s, QFVar.s), 'sFillInit')
-  Var.V.n <- fSetQF(cbind(sDATA,sTEMP), Var.s, QFVar.s, QFValue.n, 'sFillInit')
+  sTEMP <- sDATA['sDateTime']
+  sINFO <- list()
+  sINFO$DIMS <- nrow(sDATA)
+  sINFO$DTS <- median(diff(sDATA$sDateTime))
+  units(sINFO$DTS) <- "mins"
+  sINFO$DTS <- 60*24/as.numeric(sINFO$DTS) # how many measurements in a day
+  sINFO$Y.START <- data.table::year(sDATA$sDateTime[1])
+  sINFO$Y.END <- data.table::year(sDATA$sDateTime[sINFO$DIMS])
+  sINFO$Y.NUMS <- sINFO$Y.END-sINFO$Y.START+1
+  sINFO$Y.NAME <- paste0(sINFO$Y.START-2000,"-",sINFO$Y.END-2000)
+  
+  
+  
+  Var.V.n <- fSetQF(cbind(sDATA,sTEMP), Var.s, QFVar.s, QFValue.n)
   #! Var.V.n[QF.V.b == FALSE]   <-   NA_real_
   
   # Abort if variable to be filled contains no data
@@ -125,5 +142,5 @@ sFillInit = function(
   }
   
   sTEMP <<- data.frame(c(sTEMP, lTEMP))	# twutz: error prone if sTEMP already contains columns of lTEMP
-  return(invisible(NULL))
+  return(list(sTEMP,sINFO))
 }
