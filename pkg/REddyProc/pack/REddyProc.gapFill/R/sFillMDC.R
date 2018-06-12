@@ -8,6 +8,8 @@
 #' Gap-fill with Mean Diurnal Course (MDC) algorithm based on average values within +/- one hour of adjacent days, after 
 #' procedure in Reichstein et al. (2005)
 
+#' @param sTEMP # Initialized data frame sTEMP for newly generated gap filled data and qualifiers, as produced by sFillInit
+#' @param sINFO # Information on gap-filling dataset, as produced by sFillInit
 #' @param WinDays.i Window size for filling in days
 #' @param Verbose.b Logical. Print status information to screen?
 
@@ -35,7 +37,9 @@ sFillMDC = function(
   ## sEddyProc$sFillMDC - Gap filling with Mean Diurnal Course (MDC)
   ##description<<
   ## Mean Diurnal Course (MDC) algorithm based on average values within +/- one hour of adjacent days
-  WinDays.i           ##<< Window size for filling in days
+  sTEMP # Initialized data frame sTEMP for newly generated gap filled data and qualifiers, as produced by sFillInit
+  ,sINFO # Information on gap-filling dataset, as produced by sFillInit
+  ,WinDays.i           ##<< Window size for filling in days
   ,Verbose.b=TRUE     ##<< Print status information to screen
 )
   ##author<<
@@ -113,10 +117,10 @@ sFillMDC = function(
     # Only fill gaps in VAR_f and VAR_fqc
     Gaps.b <- is.na(sTEMP[lGF.M[,'index'],'VAR_f'])
     # twutz: inserted drop=FALSE, otherwise one-row matrix was not converted to data.frame correctly
-    sTEMP[lGF.M[,'index'],c('VAR_f','VAR_fqc')][Gaps.b,] <<- as.data.frame(lGF.M[,c('mean','fqc') ,drop=FALSE])[Gaps.b,] 
+    sTEMP[lGF.M[,'index'],c('VAR_f','VAR_fqc')][Gaps.b,] <- as.data.frame(lGF.M[,c('mean','fqc') ,drop=FALSE])[Gaps.b,] 
   }
   
-  return(invisible(sTEMP[,c('VAR_orig','VAR_f','VAR_fall','VAR_fnum','VAR_fsd','VAR_fwin')])) #Other columns are specific for full MR MDS algorithm
+  return(sTEMP) #Other columns are specific for full MR MDS algorithm
   ##value<< 
   ## MDC filling results in sTEMP data frame.
 }

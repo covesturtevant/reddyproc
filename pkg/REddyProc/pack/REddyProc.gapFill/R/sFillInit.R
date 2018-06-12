@@ -141,6 +141,6 @@ sFillInit = function(
             ' real gaps for gap filling.')
   }
   
-  sTEMP <<- data.frame(c(sTEMP, lTEMP))	# twutz: error prone if sTEMP already contains columns of lTEMP
+  sTEMP <- data.frame(c(sTEMP, lTEMP))	# twutz: error prone if sTEMP already contains columns of lTEMP
   return(list(sTEMP,sINFO))
 }

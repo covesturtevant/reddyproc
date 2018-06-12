@@ -124,11 +124,11 @@ sMDSGapFill = function(
   
   #+++ Full MDS algorithm
   # Step 1: Look-up table (method 1) with window size ±7 days
-  if( Met.n == 3 ) sFillLUT(7, V1.s, T1.n, V2.s, T2.n, V3.s, T3.n, Verbose.b=Verbose.b)
+  if( Met.n == 3 ) sFillLUT(sTEMP, sINFO, 7, V1.s, T1.n, V2.s, T2.n, V3.s, T3.n, Verbose.b=Verbose.b)
   # Step 2: Look-up table (method 1) with window size ±14 days
-  if( Met.n == 3 ) sFillLUT(14, V1.s, T1.n, V2.s, T2.n, V3.s, T3.n, Verbose.b=Verbose.b)
+  if( Met.n == 3 ) sFillLUT(sTEMP, sINFO, 14, V1.s, T1.n, V2.s, T2.n, V3.s, T3.n, Verbose.b=Verbose.b)
   # Step 3: Look-up table, Rg only (method 2) with window size ±7 days, 
-  if( Met.n == 3 || Met.n == 1) sFillLUT(7, V1.s, T1.n, Verbose.b=Verbose.b)
+  if( Met.n == 3 || Met.n == 1) sFillLUT(sTEMP, sINFO, 7, V1.s, T1.n, Verbose.b=Verbose.b)
   # Step 4: Mean diurnal course (method 3) with window size 0 (same day)
   sFillMDC(0, Verbose.b=Verbose.b)
   # Step 5: Mean diurnal course (method 3) with window size ±1, ±2 days
@@ -142,7 +142,7 @@ sMDSGapFill = function(
   for( WinDays.i in seq(7,210,7) ) sFillMDC(WinDays.i, Verbose.b=Verbose.b)
   
   # Set long gaps again to NA
-  sTEMP$VAR_fall <<- suppressMessages(fConvertGapsToNA(sTEMP$VAR_fall))
+  sTEMP$VAR_fall <- suppressMessages(fConvertGapsToNA(sTEMP$VAR_fall))
   
   # Message on gap filling
   TimeDiff.p <- as.numeric(Sys.time()) - as.numeric(TimeStart.p)
@@ -156,13 +156,13 @@ sMDSGapFill = function(
   ## a string suffix is needed! This suffix is added to the result column names to distinguish the results of the different setups.
   ## }}
   # Rename new columns generated during gap filling
-  colnames(sTEMP) <<- gsub('VAR_', paste(Var.s, (if(fCheckValString(Suffix.s)) '_' else ''), Suffix.s, '_', sep=''), colnames(sTEMP))
+  colnames(sTEMP) <- gsub('VAR_', paste(Var.s, (if(fCheckValString(Suffix.s)) '_' else ''), Suffix.s, '_', sep=''), colnames(sTEMP))
   # Check for duplicate columns (to detect if different processing setups were executed without different suffixes)
   if( length(names(which(table(colnames(sTEMP)) > 1))) )  {                                                                                                                                 
     warning('sMDSGapFill::: Duplicated columns found! Please specify different Suffix.s when processing different setups on the same dataset!')
   }
   
-  return(invisible(NULL))
+  return(sTEMP)
   ##value<< 
   ## Gap filling results in sTEMP data frame (with renamed columns).
 }

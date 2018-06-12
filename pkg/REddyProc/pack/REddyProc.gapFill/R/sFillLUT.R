@@ -7,6 +7,8 @@
 #' @description 
 #' Gap-fill using Look up Table, after Reichstein et al. (2005)
 
+#' @param sTEMP # Initialized data frame sTEMP for newly generated gap filled data and qualifiers, as produced by sFillInit
+#' @param sINFO # Information on gap-filling dataset, as produced by sFillInit
 #' @param WinDays.i Numeric. Window size for filling [days]
 #' @param V1.s Condition variable 1
 #' @param T1.n Tolerance interval 1
@@ -42,7 +44,9 @@ sFillLUT = function(
   ## sEddyProc$sFillLUT - Gap filling with Look-Up Table (LUT)
   ##description<<
   ## Look-Up Table (LUT) algorithm of up to five conditions within prescribed window size
-  WinDays.i             ##<< Window size for filling in days
+  sTEMP # Initialized data frame sTEMP for newly generated gap filled data and qualifiers, as produced by sFillInit
+  ,sINFO # Information on gap-filling dataset, as produced by sFillInit
+  ,WinDays.i             ##<< Window size for filling in days
   ,V1.s='none'          ##<< Condition variable 1
   ,T1.n=NA_real_        ##<< Tolerance interval 1
   ,V2.s='none'          ##<< Condition variable 2
@@ -155,14 +159,14 @@ sFillLUT = function(
   # Copy gap filled values and properties to sTEMP
   if( nrow(lGF.M) > 0 ) {
     # Fill all rows in VAR_fall and co
-    sTEMP[lGF.M[,'index'],c('VAR_fall','VAR_fnum','VAR_fsd','VAR_fmeth','VAR_fwin','VAR_fall_qc')] <<- 
+    sTEMP[lGF.M[,'index'],c('VAR_fall','VAR_fnum','VAR_fsd','VAR_fmeth','VAR_fwin','VAR_fall_qc')] <- 
       lGF.M[,c('mean','fnum','fsd','fmeth','fwin','fqc')]
     # Only fill gaps in VAR_f and VAR_fqc
     Gaps.b <- is.na(sTEMP[lGF.M[,'index'],'VAR_f'])
-    sTEMP[lGF.M[,'index'],c('VAR_f','VAR_fqc')][Gaps.b,] <<- as.data.frame(lGF.M[,c('mean','fqc') ,drop=FALSE])[Gaps.b,] 
+    sTEMP[lGF.M[,'index'],c('VAR_f','VAR_fqc')][Gaps.b,] <- as.data.frame(lGF.M[,c('mean','fqc') ,drop=FALSE])[Gaps.b,] 
   }
   
-  return(invisible(sTEMP[,c('VAR_orig','VAR_f','VAR_fall','VAR_fnum','VAR_fsd','VAR_fwin')])) #Other columns are specific for full MR MDS algorithm 
+  return(sTEMP)  
   ##value<< 
   ## LUT filling results in sTEMP data frame.
 }
