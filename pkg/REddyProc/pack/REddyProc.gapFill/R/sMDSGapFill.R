@@ -64,7 +64,7 @@ sMDSGapFill = function(
 ## Reichstein, M. et al. (2005) On the separation of net ecosystem exchange 
 ## into assimilation and ecosystem respiration: review and improved algorithm. Global Change Biology, 11, 1424-1439.
 {
-  'MDS gap filling algorithm adapted after the PV-Wave code and paper by Markus Reichstein.'
+  print('MDS gap filling algorithm adapted after the PV-Wave code and paper by Markus Reichstein.')
   
   TimeStart.p <- Sys.time()
   ##details<<
@@ -87,7 +87,7 @@ sMDSGapFill = function(
   
   # Check column names (with 'none' as dummy)
   # (Numeric type and plausibility have been checked on initialization of sEddyProc)
-  fCheckColNames(cbind(sDATA,sTEMP), c(V1.s, V2.s, V3.s), 'sMDSGapFill')
+  fCheckColNames(cbind(sDATA,sTEMP), c(V1.s, V2.s, V3.s))
   
   # Check tolerance entries (if condition variable is not 'none')
   NoneCols.b <- c(V1.s, V2.s, V3.s) %in% 'none'
@@ -124,22 +124,22 @@ sMDSGapFill = function(
   
   #+++ Full MDS algorithm
   # Step 1: Look-up table (method 1) with window size ±7 days
-  if( Met.n == 3 ) sFillLUT(sTEMP, sINFO, 7, V1.s, T1.n, V2.s, T2.n, V3.s, T3.n, Verbose.b=Verbose.b)
+  if( Met.n == 3 ) sTEMP <- sFillLUT(sDATA,sTEMP, sINFO, 7, V1.s, T1.n, V2.s, T2.n, V3.s, T3.n, Verbose.b=Verbose.b)
   # Step 2: Look-up table (method 1) with window size ±14 days
-  if( Met.n == 3 ) sFillLUT(sTEMP, sINFO, 14, V1.s, T1.n, V2.s, T2.n, V3.s, T3.n, Verbose.b=Verbose.b)
+  if( Met.n == 3 ) sTEMP <- sFillLUT(sDATA,sTEMP, sINFO, 14, V1.s, T1.n, V2.s, T2.n, V3.s, T3.n, Verbose.b=Verbose.b)
   # Step 3: Look-up table, Rg only (method 2) with window size ±7 days, 
-  if( Met.n == 3 || Met.n == 1) sFillLUT(sTEMP, sINFO, 7, V1.s, T1.n, Verbose.b=Verbose.b)
+  if( Met.n == 3 || Met.n == 1) sTEMP <- sFillLUT(sDATA,sTEMP, sINFO, 7, V1.s, T1.n, Verbose.b=Verbose.b)
   # Step 4: Mean diurnal course (method 3) with window size 0 (same day)
-  sFillMDC(0, Verbose.b=Verbose.b)
+  sTEMP <- sFillMDC(sTEMP, sINFO, 0, Verbose.b=Verbose.b)
   # Step 5: Mean diurnal course (method 3) with window size ±1, ±2 days
-  sFillMDC(1, Verbose.b=Verbose.b)
-  sFillMDC(2, Verbose.b=Verbose.b)
+  sTEMP <- sFillMDC(sTEMP, sINFO, 1, Verbose.b=Verbose.b)
+  sTEMP <- sFillMDC(sTEMP, sINFO, 2, Verbose.b=Verbose.b)
   # Step 6: Look-up table (method 1) with window size ±21, ±28, ..., ±70   
-  if( Met.n == 3 ) for( WinDays.i in seq(21,70,7) ) sFillLUT(WinDays.i, V1.s, T1.n, V2.s, T2.n, V3.s, T3.n, Verbose.b=Verbose.b)
+  if( Met.n == 3 ) for( WinDays.i in seq(21,70,7) ) sTEMP <- sFillLUT(sDATA,sTEMP, sINFO, WinDays.i, V1.s, T1.n, V2.s, T2.n, V3.s, T3.n, Verbose.b=Verbose.b)
   # Step 7: Look-up table (method 2) with window size ±14, ±21, ..., ±70  
-  if( Met.n == 3 || Met.n == 1) for( WinDays.i in seq(14,70,7) ) sFillLUT(WinDays.i, V1.s, T1.n, Verbose.b=Verbose.b)
+  if( Met.n == 3 || Met.n == 1) for( WinDays.i in seq(14,70,7) ) sTEMP <- sFillLUT(sDATA,sTEMP, sINFO, WinDays.i, V1.s, T1.n, Verbose.b=Verbose.b)
   # Step 8: Mean diurnal course (method 3) with window size ±7, ±14, ..., ±210 days 
-  for( WinDays.i in seq(7,210,7) ) sFillMDC(WinDays.i, Verbose.b=Verbose.b)
+  for( WinDays.i in seq(7,210,7) ) sTEMP <- sFillMDC(sTEMP, sINFO, WinDays.i, Verbose.b=Verbose.b)
   
   # Set long gaps again to NA
   sTEMP$VAR_fall <- suppressMessages(fConvertGapsToNA(sTEMP$VAR_fall))

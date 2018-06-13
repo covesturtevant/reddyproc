@@ -45,7 +45,7 @@ fSetQF <- function(
   # Check if specified columns exist and are numeric
 
   # Check variable to fill and apply quality flag
-  if(!(setdiff(c(Var.s, QFVar.s),'none') %in% names(sDATA))){
+  if(!(setdiff(c(Var.s, QFVar.s),'none') %in% names(Data.F))){
     stop('Missing specified columns in dataset')
   }
   if(sum(!(unlist(lapply(Data.F[setdiff(c(Var.s, QFVar.s),'none')],is.numeric)))) != 0){

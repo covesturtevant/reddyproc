@@ -4,12 +4,14 @@
 \alias{sFillLUT}
 \title{Gap-fill with Look up Table}
 \usage{
-sFillLUT(sTEMP, sINFO, WinDays.i, V1.s = "none", T1.n = NA_real_,
+sFillLUT(sDATA, sTEMP, sINFO, WinDays.i, V1.s = "none", T1.n = NA_real_,
   V2.s = "none", T2.n = NA_real_, V3.s = "none", T3.n = NA_real_,
   V4.s = "none", T4.n = NA_real_, V5.s = "none", T5.n = NA_real_,
   Verbose.b = TRUE)
 }
 \arguments{
+\item{sDATA}{# original dataset}
+
 \item{sTEMP}{# Initialized data frame sTEMP for newly generated gap filled data and qualifiers, as produced by sFillInit}
 
 \item{sINFO}{# Information on gap-filling dataset, as produced by sFillInit}

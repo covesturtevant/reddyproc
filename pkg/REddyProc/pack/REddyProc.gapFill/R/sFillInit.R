@@ -59,7 +59,7 @@ sFillInit = function(
   'Initializes data frame sTEMP for newly generated gap filled data and qualifiers.'
     
   fCheckColNames(sDATA,c(Var.s, QFVar.s,'sDateTime'))
-  
+
   sTEMP <- sDATA['sDateTime']
   sINFO <- list()
   sINFO$DIMS <- nrow(sDATA)
@@ -142,5 +142,5 @@ sFillInit = function(
   }
   
   sTEMP <- data.frame(c(sTEMP, lTEMP))	# twutz: error prone if sTEMP already contains columns of lTEMP
-  return(list(sTEMP,sINFO))
+  return(list(sTEMP=sTEMP,sINFO=sINFO))
 }

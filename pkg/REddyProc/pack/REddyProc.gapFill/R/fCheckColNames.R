@@ -34,12 +34,15 @@ fCheckColNames <- function(
 )
   ##author<<
   ## AMM
-  # TEST: Data.F <- Date.F.x; ColNames.V.s <- c('Year.n', 'none', 'Month.n', 'test'); CallFunction.s <- 'Dummy'
+  # TEST: Data.F <- Date.F.x; ColNames.V.s <- c('Year.n', 'none', 'Month.n', 'test'); 
 {
-
-  # Check variable to fill and apply quality flag
-  if(!(setdiff(c(Var.s, QFVar.s),'none') %in% names(sDATA))){
-    stop('Missing specified columns in dataset (or sDateTime)')
+  #Exclude dummy 'none'
+  NoneCols.b <- ColNames.V.s %in% 'none'
+  #Check if specified columns exist in data frame
+  NameCols.b <- ColNames.V.s[!NoneCols.b] %in% colnames(Data.F)
+  if( !all(NameCols.b) ){
+    ColNames.s <- paste( ColNames.V.s[!NoneCols.b][!NameCols.b], collapse=', ', sep='' )
+    stop('fCheckColNames::: Missing specified columns in dataset: ', ColNames.s, '!')
   }
   
   ##value<< 

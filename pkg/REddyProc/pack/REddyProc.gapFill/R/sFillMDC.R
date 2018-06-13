@@ -112,7 +112,7 @@ sFillMDC = function(
   # Copy gap filled values and properties to sTEMP
   if( nrow(lGF.M) > 0 ) {
     # Fill all rows in VAR_fall and co
-    sTEMP[lGF.M[,'index'],c('VAR_fall','VAR_fnum','VAR_fsd','VAR_fmeth','VAR_fwin','VAR_fall_qc')] <<- 
+    sTEMP[lGF.M[,'index'],c('VAR_fall','VAR_fnum','VAR_fsd','VAR_fmeth','VAR_fwin','VAR_fall_qc')] <- 
       lGF.M[,c('mean','fnum','fsd','fmeth','fwin','fqc')]
     # Only fill gaps in VAR_f and VAR_fqc
     Gaps.b <- is.na(sTEMP[lGF.M[,'index'],'VAR_f'])

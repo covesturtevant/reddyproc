@@ -7,6 +7,7 @@
 #' @description 
 #' Gap-fill using Look up Table, after Reichstein et al. (2005)
 
+#' @param sDATA # original dataset
 #' @param sTEMP # Initialized data frame sTEMP for newly generated gap filled data and qualifiers, as produced by sFillInit
 #' @param sINFO # Information on gap-filling dataset, as produced by sFillInit
 #' @param WinDays.i Numeric. Window size for filling [days]
@@ -44,7 +45,8 @@ sFillLUT = function(
   ## sEddyProc$sFillLUT - Gap filling with Look-Up Table (LUT)
   ##description<<
   ## Look-Up Table (LUT) algorithm of up to five conditions within prescribed window size
-  sTEMP # Initialized data frame sTEMP for newly generated gap filled data and qualifiers, as produced by sFillInit
+  sDATA # Original dataset
+  ,sTEMP # Initialized data frame sTEMP for newly generated gap filled data and qualifiers, as produced by sFillInit
   ,sINFO # Information on gap-filling dataset, as produced by sFillInit
   ,WinDays.i             ##<< Window size for filling in days
   ,V1.s='none'          ##<< Condition variable 1
