@@ -7,6 +7,7 @@
 #' @description 
 #'  MDS gap filling algorithm adapted after the PV-Wave code and paper by Markus Reichstein (2005).
 
+#' @param sDATA Named data frame with all variables indicated below as well as variable 'sDateTime' in POSIXct format 
 #' @param Var.s Character. Name of Variable to be filled
 #' @param QFVar.s Character. Name of Quality flag of variable to be filled
 #' @param QFValue.n Value of quality flag for _good_ (original) data, other data is set to missing
@@ -24,7 +25,15 @@
 #' M. Reichstein, E. Falge, D. Baldocchi, D. Papale, M. Aubinet, P. Berbigier, C. Bernhofer, N. Buchmann, T. Gilmanov, A. Granier, T. Grunwald, K. Havrankova, H. Ilvesniemi, D. Janous, A. Knohl, T. Laurila, A. Lohila, D. Loustau, G. Matteucci, T. Meyers, F. Miglietta, J.M. Ourcival, J. Pumpanen, S. Rambal, E. Rotenberg, M. Sanz, J. Tenhunen, G. Seufert, F. Vaccari, T. Vesala, D. Yakir, R. Valentini: On the separation of net ecosystem exchange into assimilation and ecosystem respiration: review and improved algorithm, Global Change Biology 11(9) 1424–1439 (2005)
 
 #' @return A data frame of:\cr
-#' \code{'VAR_orig','VAR_f','VAR_fall','VAR_fnum','VAR_fsd','VAR_fwin'}
+#' VAR\emph{_orig} - Original values used for gap filling \cr
+#' VAR\emph{_f   } - Original values and gaps filled with mean of selected datapoints (condition depending on gap filling method) \cr
+#' VAR\emph{_fqc} - Quality flag assigned depending on gap filling method and window length (0 = original data, 1 = most reliable, 2 = medium, 3 = least reliable) \cr
+#' VAR\emph{_fall} - All values considered as gaps (for uncertainty estimates) \cr
+#' VAR\emph{_fall_qc} - Quality flag assigned depending on gap filling method and window length (1 = most reliable, 2 = medium, 3 = least reliable) \cr
+#' VAR\emph{_fnum} - Number of datapoints used for gap-filling \cr
+#' VAR\emph{_fsd} - Standard deviation of datapoints used for gap filling (uncertainty) \cr
+#' VAR\emph{_fmeth} - Method used for gap filling (1 = similar meteo condition (sFillLUT with Rg, VPD, Tair), 2 = similar meteo (sFillLUT with Rg only), 3 = mean diurnal course (sFillMDC)) \cr
+#' VAR\emph{_fwin} - Full window length used for gap filling \cr
 
 
 #' @keywords Currently None.
