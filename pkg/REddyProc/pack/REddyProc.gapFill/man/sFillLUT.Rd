@@ -37,6 +37,8 @@ sFillLUT(sDATA, sTEMP, sINFO, WinDays.i, V1.s = "none", T1.n = NA_real_,
 \item{V5.s}{}
 
 \item{T5.n}{}
+
+\item{Verbose.b}{Logical. Print status information to screen?}
 }
 \value{
 A data frame of:\cr

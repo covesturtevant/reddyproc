@@ -9,6 +9,8 @@ sMDSGapFill(sDATA, Var.s, QFVar.s = "none", QFValue.n = NA_real_,
   T3.n = 2.5, FillAll.b = TRUE, Verbose.b = TRUE, Suffix.s = "")
 }
 \arguments{
+\item{sDATA}{Named data frame with all variables indicated below as well as variable 'sDateTime' in POSIXct format}
+
 \item{Var.s}{Character. Name of Variable to be filled}
 
 \item{QFVar.s}{Character. Name of Quality flag of variable to be filled}
@@ -35,7 +37,15 @@ sMDSGapFill(sDATA, Var.s, QFVar.s = "none", QFValue.n = NA_real_,
 }
 \value{
 A data frame of:\cr
-\code{'VAR_orig','VAR_f','VAR_fall','VAR_fnum','VAR_fsd','VAR_fwin'}
+VAR\emph{_orig} - Original values used for gap filling \cr
+VAR\emph{_f   } - Original values and gaps filled with mean of selected datapoints (condition depending on gap filling method) \cr
+VAR\emph{_fqc} - Quality flag assigned depending on gap filling method and window length (0 = original data, 1 = most reliable, 2 = medium, 3 = least reliable) \cr
+VAR\emph{_fall} - All values considered as gaps (for uncertainty estimates) \cr
+VAR\emph{_fall_qc} - Quality flag assigned depending on gap filling method and window length (1 = most reliable, 2 = medium, 3 = least reliable) \cr
+VAR\emph{_fnum} - Number of datapoints used for gap-filling \cr
+VAR\emph{_fsd} - Standard deviation of datapoints used for gap filling (uncertainty) \cr
+VAR\emph{_fmeth} - Method used for gap filling (1 = similar meteo condition (sFillLUT with Rg, VPD, Tair), 2 = similar meteo (sFillLUT with Rg only), 3 = mean diurnal course (sFillMDC)) \cr
+VAR\emph{_fwin} - Full window length used for gap filling \cr
 }
 \description{
 MDS gap filling algorithm adapted after the PV-Wave code and paper by Markus Reichstein (2005).
